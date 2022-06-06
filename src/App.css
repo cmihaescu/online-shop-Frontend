@@ -1,0 +1,34 @@
+.App {
+  text-align: center;
+}
+
+.pay-option-button {
+  padding:5px 10px;
+  color: #fff;
+  background-color: #000;
+  border-radius: 20px;
+  margin-right: 5px;
+  border: none;
+}
+
+.pay-option-button:hover {
+  cursor: pointer;
+  background-color:transparent;
+  color: rgba(255, 255, 255, 1);
+  background-color: rgba(0, 0, 0, 0.7);
+}
+body{
+  color: #fff;
+  z-index: -3;
+}
+
+
+
+.container,
+.payment-sandbox-page,
+.payment-live-page {
+  background-image: url("https://cdn.dribbble.com/users/849229/screenshots/17407002/cover_4x.png");
+  background-position: center;
+  background-size:cover;
+  height:100vh;
+}
