@@ -2,7 +2,7 @@ const CheckoutSandbox = async (sum, currency, customer_id, history) => {
   let data = { amount: sum*100, currency, customer_id };
 
   try {
-    await fetch("/card/newOrderSandbox", {
+    await fetch("https://revolut-server.herokuapp.com/card/newOrderSandbox", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
