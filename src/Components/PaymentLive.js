@@ -37,6 +37,8 @@ const PaymentLive = () => {
   console.log('amount', sum)
   console.log('body', body)
 
+  //============PAY WITH POPUP============
+
   const payWithPopup = () =>
     RevolutCheckout(public_id, "prod").then(function (instance) {
       instance.payWithPopup({
@@ -54,29 +56,29 @@ const PaymentLive = () => {
 
   //============PAY WITH CARDFIELD============
 
-  // RevolutCheckout(public_id, "prod").then(function (instance) {
-  //   var card = instance.createCardField({
-  //     target: document.getElementById("card-field"),
-  //     onSuccess() {
-  //       setTimeout(() => {
-  //         window.alert("Thank you! Payment completed");
-  //       }, 1000);
-  //     },
-  //     onError(message) {
-  //       window.alert(`Oh no :( ${message}`);
-  //     },
-  //   });
+  RevolutCheckout(public_id, "prod").then(function (instance) {
+    var card = instance.createCardField({
+      target: document.getElementById("card-field"),
+      onSuccess() {
+        setTimeout(() => {
+          window.alert("Thank you! Payment completed");
+        }, 1000);
+      },
+      onError(message) {
+        window.alert(`Oh no :( ${message}`);
+      },
+    });
 
-  //   document
-  //     .getElementById("button-submit")
-  //     .addEventListener("click", function () {
-  //       card.submit({
-  //         name,
-  //         email,
-  //         billingAddress,
-  //       });
-  //     });
-  // });
+    document
+      .getElementById("button-submit")
+      .addEventListener("click", function () {
+        card.submit({
+          name,
+          email,
+          billingAddress,
+        });
+      });
+  });
 
   //============PAY WITH REVOLUTPAY============
 

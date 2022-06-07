@@ -4,13 +4,15 @@ import CheckoutSandbox from "./Requests/CheckoutSandbox";
 import CheckoutLive from "./Requests/CheckoutLive";
 import RevolutCheckout from "@revolut/checkout";
 
+//  - pt package.json "proxy":"http://localhost:4000"
+
 function Home() {
   const [currency, setCurrency] = useState("USD");
   const [searchfield, setSearchfield] = useState("");
   const [cart, setCart] = useState([]);
   const [sum, setSum] = useState(0);
   // const [capture, setCapture] = useState(0);
-  const currencies = ["USD", "EUR", "GBP", "RON", "JPY", "CZK"];
+  const currencies = ["USD", "EUR", "GBP", "RON", "JPY", "CZK", "AUD", "CAD", "AED", "CHF", "DKK", "HKD", "NOK", "NZD", "PLN", "QAR", "SEK", "SGD", "TRY", "ZAR"];
   const [result, setResult] = useState(null);
   let customer_id = "16ec0824-1a78-4032-adfa-fefab834a591";
   
