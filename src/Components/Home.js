@@ -5,6 +5,7 @@ import CheckoutLive from "./Requests/CheckoutLive";
 import RevolutCheckout from "@revolut/checkout";
 
 //  - pt package.json "proxy":"http://localhost:4000"
+// "proxy": "https://revolut-server.herokuapp.com/"
 
 function Home() {
   const [currency, setCurrency] = useState("USD");
