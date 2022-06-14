@@ -97,6 +97,10 @@ const PaymentLive = () => {
       });
     });
 
+ //============PAY WITH REVOLUTPAY 2============
+
+ 
+
   //============PAY WITH APPLE/GOOGLE PAY============
 
     const payWithRevolutApple = () => {
@@ -286,7 +290,7 @@ const PaymentLive = () => {
         id="revolut-payment-request"
       ></div>
     </div>
-    <div>
+    <div id='order-div'>
         <pre>
          <strong>Order</strong>: {JSON.stringify(body, undefined, 2)}
         </pre>

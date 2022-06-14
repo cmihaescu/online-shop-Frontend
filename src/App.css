@@ -22,13 +22,11 @@ body{
   z-index: -3;
 }
 
-
-
-.container,
-.payment-sandbox-page,
-.payment-live-page {
-  background-image: url("https://cdn.dribbble.com/users/849229/screenshots/17407002/cover_4x.png");
-  background-position: center;
+html {
+  background: url("https://cdn.dribbble.com/users/849229/screenshots/17407002/cover_4x.png")  no-repeat center center fixed;
   background-size:cover;
-  height:100vh;
+}
+
+#order-div {
+  text-align: justify;
 }

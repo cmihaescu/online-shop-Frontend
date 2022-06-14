@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import RevolutCheckout from "@revolut/checkout";
+import RevolutCheckoutLoader from "@revolut/checkout";
 import ConfirmOrder from "./Requests/ConfirmOrder";
-
 
 const PaymentSandbox = () => {
   const [name, setName] = useState(null);
@@ -23,11 +23,12 @@ const PaymentSandbox = () => {
     let value = e.target.value;
     setBillingAddress({ ...billingAddress, [name]: value });
   };
-  
-  
+
   let public_id = useHistory().location.state.public_id;
   let order_id = useHistory().location.state.id;
   let body = useHistory().location.state;
+  let orderAmount = useHistory().location.state.order_amount.value;
+  let orderCurrency = useHistory().location.state.order_amount.currency;
   let for_merchant = "0250a474-71a3-4993-ad98-1a24e3c815cc";
   let for_customer = "b465452f-72f6-4237-83d9-3c2b1a5a9f2d";
   //============PAY WITH POPUP============
@@ -39,7 +40,7 @@ const PaymentSandbox = () => {
           window.alert("Thank you! Payment was succesful");
         },
         onError(message) {
-          window.alert(message);
+          window.alert(`Popup trigger :( ${message}.`);
         },
         name,
         email,
@@ -59,7 +60,7 @@ const PaymentSandbox = () => {
         }, 1000);
       },
       onError(message) {
-        window.alert(`Oh no :( ${message}.`);
+        window.alert(`Cardfield trigger :( ${message}.`);
       },
     });
 
@@ -74,28 +75,67 @@ const PaymentSandbox = () => {
       });
   });
 
-  //============PAY WITH REVOLUTPAY============
+  //============PAY WITH REVOLUTPAY 2============
 
-  React.useEffect(() => {
-    RevolutCheckout(public_id, "sandbox").then(function (instance) {
-      instance.revolutPay({
-        target: document.getElementById("revolut-pay"),
-        phone: "+441632960022", // recommended
-        buttonStyle: {variant:"light-outlined"},
-        onSuccess() {
-          console.log("Payment completed");
-        },
-        onError(error) {
-          console.error("Payment failed: " + error.message);
-        },
+    RevolutCheckoutLoader(public_id, "sandbox").then(RevolutCheckout => {
+
+      
+      const { revolutPay } =  RevolutCheckout.payments({
+        publicToken: "pk_I0esVl3WyXynj8t3TeEOyAQRHC4I8gmLffztYRy981Gsw4xH", // merchant public token
       });
+      const paymentOptions = {
+      totalAmount: orderAmount,
+      currency: "USD", // 3-letter currency code
+      createOrder: () => ({ publicId: order_id }),
+    };
+
+    revolutPay.mount(document.getElementById("revolut-pay2.0"), paymentOptions);
+
+    revolutPay.on("payment", (event) => {
+      switch (event.type) {
+        case "cancel": {
+          console.log(`User cancelled at: ${event.dropOffState}`);
+          break;
+        }
+        case "success":
+          console.log("Payment successful");
+          break;
+        case "error":
+          console.log(
+            `Something went wrong with RevolutPay 2.0: ${event.error.toString()}`
+          );
+          break;
+          default: {
+            console.log(event);
+          }
+        }
+      });      
+    })
+    //============PAY WITH REVOLUTPAY============
+
+  RevolutCheckout(public_id, "sandbox").then(function (instance) {
+    instance.revolutPay({
+      target: document.getElementById("revolut-pay"),
+      phone: "+441632960022", // recommended
+      buttonStyle: { variant: "light-outlined" },
+      onSuccess() {
+        console.log("Payment completed");
+      },
+      onError(error) {
+        console.error("RevolutPay 1.0 failed: " + error.message);
+      },
     });
-  }, [])
+  });
 
   return (
-    <div className="payment-sandbox-page" style={{ display: "grid", gridTemplateColumns: "2fr 1fr" }}>
+    <div
+      className="payment-sandbox-page"
+      style={{ display: "grid", gridTemplateColumns: "2fr 1fr" }}
+    >
       <div>
-        <Link className="pay-option-button" to="/">Home</Link>
+        <Link className="pay-option-button" to="/">
+          Home
+        </Link>
         <div>
           <p>Use the folowing test cards for succesful payments:</p>
           <p>Visa: 4929420573595709</p>
@@ -183,7 +223,7 @@ const PaymentSandbox = () => {
             border: "solid black 3px",
             borderRadius: "10px",
             padding: "6px",
-            background:"#fff"
+            background: "#fff",
           }}
           id="card-field"
         ></div>
@@ -196,16 +236,21 @@ const PaymentSandbox = () => {
             width: "40%",
           }}
         >
-          <button className='pay-option-button' id="button-submit">Pay with Card</button>
-          <button className='pay-option-button' onClick={() => payWithPopup()}>Pay with Popup</button>
+          <button className="pay-option-button" id="button-submit">
+            Pay with Card
+          </button>
+          <button className="pay-option-button" onClick={() => payWithPopup()}>
+            Pay with Popup
+          </button>
           <button
-                className="pay-option-button"
-                title="For paying with saved payment method"
-                onClick={() => ConfirmOrder(for_customer, order_id)}
-              >
-                {" "}
-                Confirm Order
-              </button>        </div>
+            className="pay-option-button"
+            title="For paying with saved payment method"
+            onClick={() => ConfirmOrder(for_customer, order_id)}
+          >
+            {" "}
+            Confirm Order
+          </button>{" "}
+        </div>
         <div
           style={{
             width: "400px",
@@ -215,9 +260,18 @@ const PaymentSandbox = () => {
           }}
           id="revolut-pay"
         ></div>
+        <div
+          style={{
+            width: "400px",
+            margin: "10px auto",
+            borderRadius: "10px",
+            padding: "6px",
+          }}
+          id="revolut-pay2.0"
+        ></div>
         <div id="revolut-payment-request"></div>
       </div>
-      <div>
+      <div id="order-div">
         <pre>
           <strong>Order</strong>: {JSON.stringify(body, undefined, 2)}
         </pre>
