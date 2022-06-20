@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import RevolutCheckout from "@revolut/checkout";
 import RevolutCheckoutLoader from "@revolut/checkout";
+import RetrieveOrder from "./Requests/RetrieveOrder"
 import ConfirmOrder from "./Requests/ConfirmOrder";
 
 const PaymentSandbox = () => {
@@ -23,7 +24,7 @@ const PaymentSandbox = () => {
     let value = e.target.value;
     setBillingAddress({ ...billingAddress, [name]: value });
   };
-
+  let history= useHistory()
   let public_id = useHistory().location.state.public_id;
   let order_id = useHistory().location.state.id;
   let body = useHistory().location.state;
@@ -87,6 +88,7 @@ const PaymentSandbox = () => {
       totalAmount: orderAmount,
       currency: orderCurrency, // 3-letter currency code
       createOrder: () => ({ publicId: public_id }),
+      buttonStyle: { variant: "light-outlined" },
     };
 
     revolutPay.mount(document.getElementById("revolut-pay2.0"), paymentOptions);
@@ -120,6 +122,7 @@ const PaymentSandbox = () => {
       buttonStyle: { variant: "light-outlined" },
       onSuccess() {
         console.log("Payment completed");
+        // RetrieveOrder("Sandbox", order_id, history)
       },
       onError(error) {
         console.error("RevolutPay 1.0 failed: " + error.message);
@@ -275,6 +278,8 @@ const PaymentSandbox = () => {
         <pre>
           <strong>Order</strong>: {JSON.stringify(body, undefined, 2)}
         </pre>
+        <button className='pay-option-button' onClick={() => RetrieveOrder("Sandbox", order_id, history)}>Update Order</button>
+
       </div>
     </div>
   );
