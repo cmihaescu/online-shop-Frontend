@@ -86,7 +86,7 @@ const PaymentSandbox = () => {
       const paymentOptions = {
       totalAmount: orderAmount,
       currency: "USD", // 3-letter currency code
-      createOrder: () => ({ publicId: order_id }),
+      createOrder: () => ({ publicId: public_id }),
     };
 
     revolutPay.mount(document.getElementById("revolut-pay2.0"), paymentOptions);

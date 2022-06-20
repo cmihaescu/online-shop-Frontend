@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import RevolutCheckout from "@revolut/checkout";
+import RevolutCheckoutLoader from "@revolut/checkout";
 import UpdateOrderLive from "./Requests/UpdateOrder"
 
 const PaymentLive = () => {
@@ -24,7 +25,6 @@ const PaymentLive = () => {
     setBillingAddress({ ...billingAddress, [name]: value });
   };
 
-  //============PAY WITH POPUP============
   let history = useHistory();
   let public_id = useHistory().location.state.public_id;
   let order_id = useHistory().location.state.id;
@@ -97,7 +97,42 @@ const PaymentLive = () => {
       });
     });
 
- //============PAY WITH REVOLUTPAY 2============
+   //============PAY WITH REVOLUTPAY 2============
+
+   RevolutCheckoutLoader(public_id, "prod").then(RevolutCheckout => {
+
+      
+    const { revolutPay } =  RevolutCheckout.payments({
+      publicToken: "pk_kIU6iOgto5T2fVasDCcDzoc8KE3ANwfPfl2Afd1vEhu9AZsa", // merchant public token
+    });
+    const paymentOptions = {
+    totalAmount: sum,
+    currency: "USD", // 3-letter currency code
+    createOrder: () => ({ publicId: public_id }),
+  };
+
+  revolutPay.mount(document.getElementById("revolut-pay2.0"), paymentOptions);
+
+  revolutPay.on("payment", (event) => {
+    switch (event.type) {
+      case "cancel": {
+        console.log(`User cancelled at: ${event.dropOffState}`);
+        break;
+      }
+      case "success":
+        console.log("Payment successful");
+        break;
+      case "error":
+        console.log(
+          `Something went wrong with RevolutPay 2.0: ${event.error.toString()}`
+        );
+        break;
+        default: {
+          console.log(event);
+        }
+      }
+    });      
+  })
 
  
 
@@ -279,6 +314,15 @@ const PaymentLive = () => {
           padding: "6px",
         }}
         id="revolut-pay"
+      ></div>
+        <div
+        style={{
+          width: "400px",
+          margin: "10px auto",
+          borderRadius: "10px",
+          padding: "6px",
+        }}
+        id="revolut-pay2.0"
       ></div>
       <div
         style={{
