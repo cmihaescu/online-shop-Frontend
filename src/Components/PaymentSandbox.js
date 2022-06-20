@@ -85,7 +85,7 @@ const PaymentSandbox = () => {
       });
       const paymentOptions = {
       totalAmount: orderAmount,
-      currency: "USD", // 3-letter currency code
+      currency: orderCurrency, // 3-letter currency code
       createOrder: () => ({ publicId: public_id }),
     };
 
@@ -94,14 +94,14 @@ const PaymentSandbox = () => {
     revolutPay.on("payment", (event) => {
       switch (event.type) {
         case "cancel": {
-          console.log(`User cancelled at: ${event.dropOffState}`);
+          window.alert(`User cancelled at: ${event.dropOffState}`);
           break;
         }
         case "success":
-          console.log("Payment successful");
+          window.alert("Payment with Revpay2 successful");
           break;
         case "error":
-          console.log(
+          window.alert(
             `Something went wrong with RevolutPay 2.0: ${event.error.toString()}`
           );
           break;
