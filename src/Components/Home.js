@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import CheckoutSandbox from "./Requests/CheckoutSandbox";
-import CheckoutLive from "./Requests/CheckoutLive";
+import Checkout from "./Requests/Checkout";
 import RevolutCheckout from "@revolut/checkout";
 
 //  - pt package.json "proxy":"http://localhost:4000"
@@ -12,11 +11,32 @@ function Home() {
   const [searchfield, setSearchfield] = useState("");
   const [cart, setCart] = useState([]);
   const [sum, setSum] = useState(0);
+  const [refreshState, setRefreshState] = useState(false);
   // const [capture, setCapture] = useState(0);
-  const currencies = ["USD", "EUR", "GBP", "RON", "JPY", "CZK", "AUD", "CAD", "AED", "CHF", "DKK", "HKD", "NOK", "NZD", "PLN", "QAR", "SEK", "SGD", "TRY", "ZAR"];
+  const currencies = [
+    "USD",
+    "EUR",
+    "GBP",
+    "RON",
+    "JPY",
+    "CZK",
+    "AUD",
+    "CAD",
+    "AED",
+    "CHF",
+    "DKK",
+    "HKD",
+    "NOK",
+    "NZD",
+    "PLN",
+    "QAR",
+    "SEK",
+    "SGD",
+    "TRY",
+    "ZAR",
+  ];
   const [result, setResult] = useState(null);
   let customer_id = "16ec0824-1a78-4032-adfa-fefab834a591";
-  
 
   const items = [
     { name: "Backpack", price: 150 },
@@ -121,9 +141,7 @@ function Home() {
   return (
     <div className="container">
       <h1> Revolut Shop </h1>
-      <div        
-        style={{ display: "grid", gridTemplateColumns: "1fr 3fr" }}
-      >
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 3fr" }}>
         <div className="items">
           <div className="itemsList" style={{ textAlign: "left" }}>
             <ul>
@@ -173,8 +191,8 @@ function Home() {
                         ? Math.round(Number(item.price) * 0.74)
                         : currency === "EUR"
                         ? Math.round(Number(item.price) * 0.87)
-                        :currency === "JPY"
-                        ? Math.round(Number(item.price)*127,12)
+                        : currency === "JPY"
+                        ? Math.round(Number(item.price) * 127, 12)
                         : Math.round(Number(item.price) * 4.28)}{" "}
                       {currency}
                       <button
@@ -221,19 +239,26 @@ function Home() {
               </ul>
               <button
                 className="pay-option-button"
-                onClick={() => CheckoutSandbox(sum, currency, customer_id, history)}
+                onClick={() =>
+                  Checkout(sum, currency, history, "Sandbox")
+                }
               >
                 {" "}
                 Go to Checkout-Sandbox
               </button>
               <button
                 className="pay-option-button"
-                onClick={() => CheckoutLive(sum, currency, history)}
+                onClick={() => Checkout(sum, currency, history, "Live")}
               >
                 {" "}
                 Go to Checkout-Live
               </button>
-              <p style={{background:'linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0) 100%)'}}>
+              <p
+                style={{
+                  background:
+                    "linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0) 100%)",
+                }}
+              >
                 Total:{" "}
                 {currency === "GBP"
                   ? Math.round(sum * 0.74)

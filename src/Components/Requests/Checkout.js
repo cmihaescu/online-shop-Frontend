@@ -1,8 +1,9 @@
-const CheckoutSandbox = async (sum, currency, customer_id, history) => {
-  let data = { amount: sum*100, currency, customer_id };
+const Checkout = async (sum, currency, history, environment) => {
+  let data = { amount: sum*100, currency};
 
+console.log('environment:', environment)
   try {
-    await fetch("/card/newOrderSandbox", {
+    await fetch(`/card/newOrder${environment}`, {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
@@ -12,11 +13,11 @@ const CheckoutSandbox = async (sum, currency, customer_id, history) => {
       .then((res) => res.json())
       .then((data) => data)
       .then((body) => {
-        history.push("/cardSandbox", body);
+        history.push(`/card${environment}`, body);
       });
   } catch (err) {
     console.error(err);
   }
 };
 
-export default CheckoutSandbox;
+export default Checkout;

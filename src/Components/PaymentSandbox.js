@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import RevolutCheckout from "@revolut/checkout";
 import RevolutCheckoutLoader from "@revolut/checkout";
-import RetrieveOrder from "./Requests/RetrieveOrder"
+import RetrieveOrder from "./Requests/RetrieveOrder";
 import ConfirmOrder from "./Requests/ConfirmOrder";
 
 const PaymentSandbox = () => {
@@ -24,14 +24,16 @@ const PaymentSandbox = () => {
     let value = e.target.value;
     setBillingAddress({ ...billingAddress, [name]: value });
   };
-  let history= useHistory()
+  let history = useHistory();
   let public_id = useHistory().location.state.public_id;
   let order_id = useHistory().location.state.id;
   let body = useHistory().location.state;
+  let state = useHistory().location.state.state;
   let orderAmount = useHistory().location.state.order_amount.value;
   let orderCurrency = useHistory().location.state.order_amount.currency;
   let for_merchant = "0250a474-71a3-4993-ad98-1a24e3c815cc";
   let for_customer = "b465452f-72f6-4237-83d9-3c2b1a5a9f2d";
+
   //============PAY WITH POPUP============
 
   const payWithPopup = () =>
@@ -77,58 +79,61 @@ const PaymentSandbox = () => {
   });
 
   //============PAY WITH REVOLUTPAY 2============
-
-    RevolutCheckoutLoader(public_id, "sandbox").then(RevolutCheckout => {
-
-      
-      const { revolutPay } =  RevolutCheckout.payments({
+  React.useEffect(() => {
+    RevolutCheckoutLoader(public_id, "sandbox").then((RevolutCheckout) => {
+      const { revolutPay } = RevolutCheckout.payments({
         publicToken: "pk_I0esVl3WyXynj8t3TeEOyAQRHC4I8gmLffztYRy981Gsw4xH", // merchant public token
       });
       const paymentOptions = {
-      totalAmount: orderAmount,
-      currency: orderCurrency, // 3-letter currency code
-      createOrder: () => ({ publicId: public_id }),
-      buttonStyle: { variant: "light-outlined" },
-    };
+        totalAmount: orderAmount,
+        currency: orderCurrency, // 3-letter currency code
+        createOrder: () => ({ publicId: public_id }),
+        buttonStyle: { variant: "light-outlined" },
+      };
 
-    revolutPay.mount(document.getElementById("revolut-pay2.0"), paymentOptions);
+      revolutPay.mount(
+        document.getElementById("revolut-pay2.0"),
+        paymentOptions
+      );
 
-    revolutPay.on("payment", (event) => {
-      switch (event.type) {
-        case "cancel": {
-          window.alert(`User cancelled at: ${event.dropOffState}`);
-          break;
-        }
-        case "success":
-          window.alert("Payment with Revpay2 successful");
-          break;
-        case "error":
-          window.alert(
-            `Something went wrong with RevolutPay 2.0: ${event.error.toString()}`
-          );
-          break;
+      revolutPay.on("payment", (event) => {
+        switch (event.type) {
+          case "cancel": {
+            window.alert(`User cancelled at: ${event.dropOffState}`);
+            break;
+          }
+          case "success":
+            window.alert("Payment with Revpay2 successful");
+            break;
+          case "error":
+            window.alert(
+              `Something went wrong with RevolutPay 2.0: ${event.error.toString()}`
+            );
+            break;
           default: {
             console.log(event);
           }
         }
-      });      
-    })
-    //============PAY WITH REVOLUTPAY============
-
-  RevolutCheckout(public_id, "sandbox").then(function (instance) {
-    instance.revolutPay({
-      target: document.getElementById("revolut-pay"),
-      phone: "+441632960022", // recommended
-      buttonStyle: { variant: "light-outlined" },
-      onSuccess() {
-        console.log("Payment completed");
-        // RetrieveOrder("Sandbox", order_id, history)
-      },
-      onError(error) {
-        console.error("RevolutPay 1.0 failed: " + error.message);
-      },
+      });
     });
-  });
+  }, []);
+  //============PAY WITH REVOLUTPAY============
+  React.useEffect(() => {
+    RevolutCheckout(public_id, "sandbox").then(function (instance) {
+      instance.revolutPay({
+        target: document.getElementById("revolut-pay"),
+        phone: "+441632960022", // recommended
+        buttonStyle: { variant: "light-outlined" },
+        onSuccess() {
+          console.log("Payment completed");
+          RetrieveOrder("Sandbox", order_id, history)
+        },
+        onError(error) {
+          console.error("RevolutPay 1.0 failed: " + error.message);
+        },
+      });
+    });
+  }, []);
 
   return (
     <div
@@ -278,8 +283,12 @@ const PaymentSandbox = () => {
         <pre>
           <strong>Order</strong>: {JSON.stringify(body, undefined, 2)}
         </pre>
-        <button className='pay-option-button' onClick={() => RetrieveOrder("Sandbox", order_id, history)}>Update Order</button>
-
+        <button
+          className="pay-option-button"
+          onClick={() => RetrieveOrder("Sandbox", order_id, history)}
+        >
+          Update Order
+        </button>
       </div>
     </div>
   );

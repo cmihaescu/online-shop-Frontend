@@ -32,6 +32,7 @@ const PaymentLive = () => {
   let sum = useHistory().location.state.order_amount.value;
   let currency = useHistory().location.state.order_amount.currency;
   let body = useHistory().location.state;
+  let location = useHistory().location;
 
   console.log("public_id-Live", public_id);
   console.log("order_id-Live", order_id);
