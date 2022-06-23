@@ -1,3 +1,4 @@
+// make the function so that it rerenders
 const RetrieveOrder = async (environment, order_id, history) => {
     try {
         await fetch(`/card/retrieveOrder${environment}`, {
@@ -10,12 +11,9 @@ const RetrieveOrder = async (environment, order_id, history) => {
         .then((res) => res.json())
         .then((data) => data)
         .then((body) => {
-            history.push(`/card${environment}`, body)
-            console.log("retrieve order", body)
-        })
-        .then(() => {
-            window.location.reload();
-            return false;
+            // history.push(`/card${environment}`, body)
+            console.log("retrieve order success", body)
+            return body
         })
     } catch (error) {
         console.error(error);

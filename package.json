@@ -2,11 +2,11 @@
   "name": "shop",
   "version": "0.1.0",
   "private": true,
-  "engines":{
-    "node":"14.18.1"
+  "engines": {
+    "node": "14.18.1"
   },
   "dependencies": {
-    "@revolut/checkout": "^1.0.14",
+    "@revolut/checkout": "^1.1.0",
     "@testing-library/jest-dom": "^5.15.0",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
@@ -43,5 +43,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy":"http://localhost:4000"
+  "proxy": "http://localhost:4000"
 }

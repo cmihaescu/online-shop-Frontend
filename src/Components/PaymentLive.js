@@ -101,45 +101,123 @@ const PaymentLive = () => {
   }, []);
 
   //============PAY WITH REVOLUTPAY 2============
-  React.useEffect(() => {
-    RevolutCheckoutLoader(public_id, "prod").then((RevolutCheckout) => {
-      const { revolutPay } = RevolutCheckout.payments({
-        publicToken: "pk_kIU6iOgto5T2fVasDCcDzoc8KE3ANwfPfl2Afd1vEhu9AZsa", // merchant public token
-      });
-      const paymentOptions = {
-        totalAmount: sum,
-        currency: currency, // 3-letter currency code
-        buttonStyle: { variant: "light-outlined" },
-        createOrder: () => ({ publicId: public_id }),
-      };
+  // React.useEffect(() => {
+  //   RevolutCheckoutLoader(public_id, "prod").then((RevolutCheckout) => {
+  //     const { revolutPay } = RevolutCheckout.payments({
+  //       publicToken: "pk_kIU6iOgto5T2fVasDCcDzoc8KE3ANwfPfl2Afd1vEhu9AZsa", // merchant public token
+  //     });
+  //     const paymentOptions = {
+  //       totalAmount: sum,
+  //       currency: currency, // 3-letter currency code
+  //       buttonStyle: { variant: "light-outlined" },
+  //       createOrder: () => ({ publicId: public_id }),
+  //     };
 
-      revolutPay.mount(
-        document.getElementById("revolut-pay2.0"),
-        paymentOptions
-      );
+  //     revolutPay.mount(
+  //       document.getElementById("revolut-pay2.0"),
+  //       paymentOptions
+  //     );
 
-      revolutPay.on("payment", (event) => {
-        switch (event.type) {
-          case "cancel": {
-            window.alert(`User cancelled at: ${event.dropOffState}`);
-            break;
-          }
-          case "success":
-            window.alert("Payment with Revpay2 successful");
-            break;
+  //     revolutPay.on("payment", (event) => {
+  //       switch (event.type) {
+  //         case "cancel": {
+  //           window.alert(`User cancelled at: ${event.dropOffState}`);
+  //           break;
+  //         }
+  //         case "success":
+  //           window.alert("Payment with Revpay2 successful");
+  //           break;
+  //         case "error":
+  //           window.alert(
+  //             `Something went wrong with RevolutPay 2.0: ${event.error.toString()}`
+  //           );
+  //           break;
+  //         default: {
+  //           console.log(event);
+  //         }
+  //       }
+  //     });
+  //   });
+  // }, []);
+
+
+  RevolutCheckout.payments({
+    locale: 'en',
+    mode: "prod",// defaults to prod
+    publicToken: "pk_kIU6iOgto5T2fVasDCcDzoc8KE3ANwfPfl2Afd1vEhu9AZsa" // merchant public token
+}).then((paymentInstance) => {
+  const paymentOptions = {
+    totalAmount: sum,
+    currency: currency, // 3-letter currency code
+    buttonStyle: { variant: "light-outlined" },
+    //SIMPLE FUNCTION METHOD
+
+    // createOrder: () => ({ publicId: public_id }),
+
+    //RETRIEVE ORDER METHOD
+    // createOrder: async () => {
+    //   const order =
+    //   await fetch(`/card/retrieveOrderLive`, {
+    //     method:"POST",
+    //     body:JSON.stringify({order_id}),
+    //     headers: {
+    //         "Content-Type": "application/json",
+    //     },
+    // })
+    // .then((res) => res.json())
+    // .then((data) => {return data})
+    
+    //   console.log("order paymentLive.js", order)
+    //   return ({ publicId: order.public_id })}
+      
+      //CREATE ORDER METHOD
+    createOrder: async () => {
+      const order =
+      await fetch(`/card/newOrderLive`, {
+        method:"POST",
+        body:JSON.stringify({amount: sum, currency}),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    .then((res) => res.json())
+    .then((data) => {return data})
+    
+      console.log("order paymentLive.js", order)
+      return ({ publicId: order.public_id })}
+  
+  };
+  
+  
+  // Promise.resolve({publicId: 'sss'})
+
+  const revolutPay = paymentInstance.revolutPay
+  
+  revolutPay.mount(
+    document.getElementById("revolut-pay2.0"),
+    paymentOptions
+    );
+    
+    revolutPay.on("payment", (event) => {
+      switch (event.type) {
+        case "cancel": {
+          window.alert(`User cancelled at: ${event.dropOffState}`);
+          break;
+        }
+        case "success":
+          window.alert("Payment with Revpay2 successful");
+          break;
           case "error":
             window.alert(
               `Something went wrong with RevolutPay 2.0: ${event.error.toString()}`
-            );
-            break;
-          default: {
-            console.log(event);
-          }
-        }
-      });
-    });
-  }, []);
-
+              );
+              break;
+              default: {
+                console.log(event);
+              }
+            }
+          })
+        })
   //============PAY WITH APPLE/GOOGLE PAY============
 
   const payWithRevolutApple = () => {
