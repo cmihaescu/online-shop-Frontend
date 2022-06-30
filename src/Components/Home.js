@@ -41,6 +41,7 @@ function Home() {
   const items = [
     { name: "Backpack", price: 150 },
     { name: "Hat", price: 0.05 },
+    { name: "Hat 1 cent", price: 0.01 },
     { name: "Jacket", price: 300 },
     { name: "Boots", price: 250 },
     { name: "Skis", price: 600 },

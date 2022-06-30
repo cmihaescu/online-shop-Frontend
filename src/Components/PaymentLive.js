@@ -152,7 +152,7 @@ const PaymentLive = () => {
     buttonStyle: { variant: "light-outlined" },
     //SIMPLE FUNCTION METHOD
 
-    // createOrder: () => ({ publicId: public_id }),
+    createOrder: () => ({ publicId: "2999a182-4d9c-4783-a6d7-7a1f8ae00236" }),
 
     //RETRIEVE ORDER METHOD
     // createOrder: async () => {
@@ -171,21 +171,20 @@ const PaymentLive = () => {
     //   return ({ publicId: order.public_id })}
       
       //CREATE ORDER METHOD
-    createOrder: async () => {
-      const order =
-      await fetch(`/card/newOrderLive`, {
-        method:"POST",
-        body:JSON.stringify({amount: sum, currency}),
-        headers: {
-            "Content-Type": "application/json",
-        },
-    })
-    .then((res) => res.json())
-    .then((data) => {return data})
+    // createOrder: async () => {
+    //   const order =
+    //   await fetch(`/card/newOrderLive`, {
+    //     method:"POST",
+    //     body:JSON.stringify({amount: sum, currency}),
+    //     headers: {
+    //         "Content-Type": "application/json",
+    //     },
+    // })
+    // .then((res) => res.json())
+    // .then((data) => {return data})
     
-      console.log("order paymentLive.js", order)
-      return ({ publicId: order.public_id })}
-  
+    //   console.log("order paymentLive.js", order)
+    //   return ({ publicId: order.public_id })}  
   };
   
   
@@ -220,7 +219,7 @@ const PaymentLive = () => {
         })
   //============PAY WITH APPLE/GOOGLE PAY============
 
-  const payWithRevolutApple = () => {
+  const payWithRevolutApple = () => { 
     // React.useEffect(() => {
 
     const RC = RevolutCheckout(public_id, "prod");
