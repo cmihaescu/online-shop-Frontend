@@ -123,14 +123,14 @@ const PaymentSandbox = () => {
       publicToken: "pk_I0esVl3WyXynj8t3TeEOyAQRHC4I8gmLffztYRy981Gsw4xH" // merchant public token
   }).then((paymentInstance) => {
     const paymentOptions = {
-      totalAmount: 777,
-      currency: "GBP", // 3-letter currency code
+      totalAmount: orderAmount,
+      currency: orderCurrency, // 3-letter currency code
       buttonStyle: { variant: "light-outlined" },
       //SIMPLE FUNCTION METHOD
 
-      createOrder: () => ({ publicId: "760bd008-1450-4f6e-b3e7-8fe6f7370d6c" }),
+      createOrder: () => ({ publicId: public_id }),
       //RETRIEVE ORDER METHOD
-
+ 
       // createOrder: async () => {
       //   const order =
       //   await fetch(`/card/retrieveOrderSandbox`, {

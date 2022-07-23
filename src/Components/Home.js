@@ -3,8 +3,8 @@ import { useHistory } from "react-router-dom";
 import Checkout from "./Requests/Checkout";
 import RevolutCheckout from "@revolut/checkout";
 
-//  - pt package.json "proxy":"http://localhost:4000"
-// "proxy": "https://revolut-server.herokuapp.com/"
+//  - pt local deploy - package.json "proxy":"http://localhost:4000"
+// pt heroku deploy - "proxy": "https://revolut-server.herokuapp.com/"
 
 function Home() {
   const [currency, setCurrency] = useState("USD");

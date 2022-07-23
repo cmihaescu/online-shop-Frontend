@@ -142,7 +142,7 @@ const PaymentLive = () => {
 
 
   RevolutCheckout.payments({
-    locale: 'en',
+    locale: 'fr',
     mode: "prod",// defaults to prod
     publicToken: "pk_kIU6iOgto5T2fVasDCcDzoc8KE3ANwfPfl2Afd1vEhu9AZsa" // merchant public token
 }).then((paymentInstance) => {
@@ -152,7 +152,7 @@ const PaymentLive = () => {
     buttonStyle: { variant: "light-outlined" },
     //SIMPLE FUNCTION METHOD
 
-    createOrder: () => ({ publicId: "2999a182-4d9c-4783-a6d7-7a1f8ae00236" }),
+    createOrder: () => ({ publicId: public_id }),
 
     //RETRIEVE ORDER METHOD
     // createOrder: async () => {
